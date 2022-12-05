@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Projet-DM</string>
+    <string name="title_activity_detail">DetailActivity</string>
 </resources>
