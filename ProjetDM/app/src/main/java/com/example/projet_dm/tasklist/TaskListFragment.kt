@@ -2,23 +2,30 @@ package com.example.projet_dm.tasklist
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.lifecycleScope
 import com.example.projet_dm.DetailActivity
+import com.example.projet_dm.data.Api
 import com.example.projet_dm.databinding.FragmentTaskListBinding
+import kotlinx.coroutines.launch
 import java.util.*
 
 class TaskListFragment : Fragment() {
     private var _binding : FragmentTaskListBinding? = null
     private val binding get() = _binding!!
+    private val viewModel: TasksListViewModel by viewModels()
 
     private val adapterListener : TaskListListener = object : TaskListListener {
         override fun onClickDelete(task: Task) {
-            taskList = taskList - task
-            adapter.submitList(taskList)
+            viewModel.remove(task)
+            adapter.submitList(viewModel.tasksStateFlow.value)
         }
         override fun onClickEdit(task: Task) {
             val intent = Intent(context, DetailActivity::class.java)
@@ -41,30 +48,23 @@ class TaskListFragment : Fragment() {
     }
 
     private val adapter = TaskListAdapter(adapterListener)
-    private var taskList = listOf(
-        Task(id = "id_1", title = "Task 1", description = "description 1"),
-        Task(id = "id_2", title = "Task 2"),
-        Task(id = "id_3", title = "Task 3")
-    )
 
     private val createTask = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         val task = result.data?.getSerializableExtra("task") as Task? ?: return@registerForActivityResult
-        taskList = taskList + task
-        // dans cette callback on récupèrera la task et on l'ajoutera à la liste
-        adapter.submitList(taskList)
+        viewModel.add(task)
+        adapter.submitList(viewModel.tasksStateFlow.value)
     }
 
     private val editTask = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         val task = result.data?.getSerializableExtra("task") as Task? ?: return@registerForActivityResult
-        taskList = taskList.map { if (it.id == task.id) task else it}
-        adapter.submitList(taskList)
+        viewModel.edit(task)
+        adapter.submitList(viewModel.tasksStateFlow.value)
     }
 
     private val shareTask = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         val task = result.data?.getSerializableExtra("task") as Task? ?: return@registerForActivityResult
-        taskList = taskList + task
-        // dans cette callback on récupèrera la task et on l'ajoutera à la liste
-        adapter.submitList(taskList)
+        viewModel.add(task)
+        adapter.submitList(viewModel.tasksStateFlow.value)
     }
 
     override fun onCreateView(
@@ -73,7 +73,12 @@ class TaskListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentTaskListBinding.inflate(layoutInflater, container, false)
-
+        lifecycleScope.launch { // on lance une coroutine car `collect` est `suspend`
+            viewModel.tasksStateFlow.collect { newList : List<Task> ->
+                viewModel.refresh()
+                adapter.submitList(viewModel.tasksStateFlow.value)
+            }
+        }
         return binding.root
     }
 
@@ -118,6 +123,14 @@ class TaskListFragment : Fragment() {
 
         val recyclerView = binding.recyclerViewID
         recyclerView.adapter = adapter
-        adapter.submitList(taskList)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        lifecycleScope.launch {
+            val user = Api.userWebService.fetchUser().body()!!
+            binding.taskUsername.text = user.name
+        }
+        viewModel.refresh() // on demande de rafraîchir les données sans attendre le retour directement
     }
 }
