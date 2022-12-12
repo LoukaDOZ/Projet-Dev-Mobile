@@ -1,6 +1,5 @@
 package com.example.projet_dm
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -21,7 +20,7 @@ class DetailActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            var shareDescription = ""
+            /*var shareDescription = ""
             var sharing = false
             var editTask: Task? = null
 
@@ -42,7 +41,11 @@ class DetailActivity : ComponentActivity() {
                 if(intent.getSerializableExtra("task") != null){
                     editTask = intent.getSerializableExtra("task") as Task
                 }
-            }
+            }*/
+
+            val task = intent.getSerializableExtra("task")
+            var editTask: Task? = null
+            if(task != null) editTask = task as Task
 
             ProjetDMTheme {
                 // A surface container using the 'background' color from the theme

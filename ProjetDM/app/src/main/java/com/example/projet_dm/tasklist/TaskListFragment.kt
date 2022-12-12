@@ -7,12 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
 import com.example.projet_dm.DetailActivity
-import com.example.projet_dm.R
 import com.example.projet_dm.databinding.FragmentTaskListBinding
-import com.example.projet_dm.databinding.ItemTaskBinding
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.*
 
 class TaskListFragment : Fragment() {
@@ -50,7 +46,6 @@ class TaskListFragment : Fragment() {
         Task(id = "id_2", title = "Task 2"),
         Task(id = "id_3", title = "Task 3")
     )
-    private var taskCount = 3
 
     private val createTask = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         val task = result.data?.getSerializableExtra("task") as Task? ?: return@registerForActivityResult
@@ -65,6 +60,12 @@ class TaskListFragment : Fragment() {
         adapter.submitList(taskList)
     }
 
+    private val shareTask = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        val task = result.data?.getSerializableExtra("task") as Task? ?: return@registerForActivityResult
+        taskList = taskList + task
+        // dans cette callback on récupèrera la task et on l'ajoutera à la liste
+        adapter.submitList(taskList)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -82,16 +83,37 @@ class TaskListFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        var shareDescription = ""
+        var sharing = false
+
+        val intent = activity?.intent;
+        when (intent?.action) {
+            Intent.ACTION_SEND -> {
+                if ("text/plain" == intent.type) {
+                    intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
+                        shareDescription = it
+                        sharing = true
+                    }
+                }
+            }
+        }
+
+        if(sharing) {
+            val detailIntent = Intent(context, DetailActivity::class.java)
+            detailIntent.putExtra("task", Task(id = UUID.randomUUID().toString(), title="", description = shareDescription))
+            shareTask.launch(detailIntent)
+        }
+
         binding.plusButton.setOnClickListener {
             /*taskCount++
             val newTask = Task(id = UUID.randomUUID().toString(), title = "Task ${taskCount}")
             taskList = taskList + newTask
             adapter.submitList(taskList)*/
 
-            val intent = Intent(context, DetailActivity::class.java)
+            val plusIntent = Intent(context, DetailActivity::class.java)
 
             //startActivity(intent)
-            createTask.launch(intent)
+            createTask.launch(plusIntent)
         }
 
         val recyclerView = binding.recyclerViewID
