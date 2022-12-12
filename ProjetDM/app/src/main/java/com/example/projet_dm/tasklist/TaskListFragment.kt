@@ -124,7 +124,7 @@ class TaskListFragment : Fragment() {
             lifecycleScope.launch {
                 viewModel.tasksStateFlow.collect { newList : List<Task> ->
                     adapter.submitList(newList)
-                }s
+                }
             }
             viewModel.refresh()
             pullToRefresh.isRefreshing = false
