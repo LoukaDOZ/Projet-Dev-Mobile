@@ -1,23 +1,22 @@
 package com.example.projet_dm.tasklist
 
+import android.R
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.projet_dm.DetailActivity
 import com.example.projet_dm.data.Api
 import com.example.projet_dm.databinding.FragmentTaskListBinding
 import kotlinx.coroutines.launch
 import java.util.*
+
 
 class TaskListFragment : Fragment() {
     private var _binding : FragmentTaskListBinding? = null
@@ -119,6 +118,17 @@ class TaskListFragment : Fragment() {
 
         val recyclerView = binding.recyclerViewID
         recyclerView.adapter = adapter
+
+        val pullToRefresh: SwipeRefreshLayout = binding.pullToRefresh
+        pullToRefresh.setOnRefreshListener {
+            lifecycleScope.launch {
+                viewModel.tasksStateFlow.collect { newList : List<Task> ->
+                    adapter.submitList(newList)
+                }s
+            }
+            viewModel.refresh()
+            pullToRefresh.isRefreshing = false
+        }
     }
 
     override fun onResume() {
@@ -132,6 +142,6 @@ class TaskListFragment : Fragment() {
                 adapter.submitList(newList)
             }
         }
-        viewModel.refresh() // on demande de rafraîchir les données sans attendre le retour directement
+        viewModel.refresh()
     }
 }
