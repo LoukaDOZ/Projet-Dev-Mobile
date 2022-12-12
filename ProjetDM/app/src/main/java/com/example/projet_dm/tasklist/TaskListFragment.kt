@@ -2,6 +2,8 @@ package com.example.projet_dm.tasklist
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -123,6 +125,19 @@ class TaskListFragment : Fragment() {
 
         val recyclerView = binding.recyclerViewID
         recyclerView.adapter = adapter
+
+        val mainHandler = Handler(Looper.getMainLooper())
+        mainHandler.post(object : Runnable {
+            override fun run() {
+                lifecycleScope.launch { // on lance une coroutine car `collect` est `suspend`
+                    viewModel.tasksStateFlow.collect { newList : List<Task> ->
+                        viewModel.refresh()
+                        adapter.submitList(viewModel.tasksStateFlow.value)
+                    }
+                }
+                mainHandler.postDelayed(this, 1000)
+            }
+        })
     }
 
     override fun onResume() {

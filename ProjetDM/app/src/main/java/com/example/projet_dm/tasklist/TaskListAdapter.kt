@@ -8,8 +8,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.projet_dm.R
-import com.example.projet_dm.databinding.FragmentTaskListBinding
-import com.example.projet_dm.databinding.ItemTaskBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 object MyItemsDiffCallback : DiffUtil.ItemCallback<Task>() {
