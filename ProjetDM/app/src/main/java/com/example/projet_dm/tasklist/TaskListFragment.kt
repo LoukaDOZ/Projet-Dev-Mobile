@@ -75,12 +75,6 @@ class TaskListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentTaskListBinding.inflate(layoutInflater, container, false)
-        lifecycleScope.launch { // on lance une coroutine car `collect` est `suspend`
-            viewModel.tasksStateFlow.collect { newList : List<Task> ->
-                viewModel.refresh()
-                adapter.submitList(viewModel.tasksStateFlow.value)
-            }
-        }
         return binding.root
     }
 
@@ -112,32 +106,19 @@ class TaskListFragment : Fragment() {
         }
 
         binding.plusButton.setOnClickListener {
-            /*taskCount++
-            val newTask = Task(id = UUID.randomUUID().toString(), title = "Task ${taskCount}")
-            taskList = taskList + newTask
-            adapter.submitList(taskList)*/
-
             val plusIntent = Intent(context, DetailActivity::class.java)
-
-            //startActivity(intent)
             createTask.launch(plusIntent)
         }
 
+        lifecycleScope.launch {
+            viewModel.tasksStateFlow.collect { newList : List<Task> ->
+                adapter.submitList(newList)
+            }
+        }
+        viewModel.refresh()
+
         val recyclerView = binding.recyclerViewID
         recyclerView.adapter = adapter
-
-        val mainHandler = Handler(Looper.getMainLooper())
-        mainHandler.post(object : Runnable {
-            override fun run() {
-                lifecycleScope.launch { // on lance une coroutine car `collect` est `suspend`
-                    viewModel.tasksStateFlow.collect { newList : List<Task> ->
-                        viewModel.refresh()
-                        adapter.submitList(viewModel.tasksStateFlow.value)
-                    }
-                }
-                mainHandler.postDelayed(this, 1000)
-            }
-        })
     }
 
     override fun onResume() {
@@ -145,6 +126,11 @@ class TaskListFragment : Fragment() {
         lifecycleScope.launch {
             val user = Api.userWebService.fetchUser().body()!!
             binding.taskUsername.text = user.name
+        }
+        lifecycleScope.launch {
+            viewModel.tasksStateFlow.collect { newList : List<Task> ->
+                adapter.submitList(newList)
+            }
         }
         viewModel.refresh() // on demande de rafraîchir les données sans attendre le retour directement
     }
