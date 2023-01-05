@@ -1,6 +1,5 @@
 package com.example.projet_dm.tasklist
 
-import android.R
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,9 +10,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import coil.load
 import com.example.projet_dm.DetailActivity
+import com.example.projet_dm.R
 import com.example.projet_dm.data.Api
 import com.example.projet_dm.databinding.FragmentTaskListBinding
+import com.example.projet_dm.user.UserActivity
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -109,6 +111,11 @@ class TaskListFragment : Fragment() {
             createTask.launch(plusIntent)
         }
 
+        binding.profilePicture.setOnClickListener {
+            val profileIntent = Intent(context, UserActivity::class.java)
+            startActivity(profileIntent)
+        }
+
         lifecycleScope.launch {
             viewModel.tasksStateFlow.collect { newList : List<Task> ->
                 adapter.submitList(newList)
@@ -121,12 +128,7 @@ class TaskListFragment : Fragment() {
 
         val pullToRefresh: SwipeRefreshLayout = binding.pullToRefresh
         pullToRefresh.setOnRefreshListener {
-            lifecycleScope.launch {
-                viewModel.tasksStateFlow.collect { newList : List<Task> ->
-                    adapter.submitList(newList)
-                }
-            }
-            viewModel.refresh()
+            onResume()
             pullToRefresh.isRefreshing = false
         }
     }
@@ -136,6 +138,9 @@ class TaskListFragment : Fragment() {
         lifecycleScope.launch {
             val user = Api.userWebService.fetchUser().body()!!
             binding.taskUsername.text = user.name
+            binding.profilePicture.load(user.avatar) {
+                error(R.drawable.ic_launcher_background) // image par défaut en cas d'erreur
+            }
         }
         lifecycleScope.launch {
             viewModel.tasksStateFlow.collect { newList : List<Task> ->
