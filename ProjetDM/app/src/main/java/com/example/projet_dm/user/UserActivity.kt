@@ -1,13 +1,17 @@
 package com.example.projet_dm.user
 
+import android.Manifest
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.material.Button
@@ -32,19 +36,19 @@ class UserActivity : ComponentActivity() {
             val takePicture = rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) {
                 bitmap = it
                 composeScope.launch {
-                    bitmap?.let { it1 -> Api.userWebService.updateAvatar(it1.toRequestBody()) }
+                    Api.userWebService.updateAvatar(bitmap!!.toRequestBody())
                 }
             }
 
             val browsePicture = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) {
                 uri = it
                 composeScope.launch {
-                    uri?.let { it1 -> Api.userWebService.updateAvatar(it1.toRequestBody()) }
+                    Api.userWebService.updateAvatar(uri!!.toRequestBody())
                 }
             }
 
             val requestPermissions = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-                if(granted) browsePicture.launch(null)
+                if(granted) browsePicture.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
             }
 
             Column {
@@ -61,7 +65,10 @@ class UserActivity : ComponentActivity() {
                 )
                 Button(
                     onClick = {
-                        requestPermissions.launch(READ_EXTERNAL_STORAGE)
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            requestPermissions.launch(Manifest.permission.READ_MEDIA_IMAGES)
+                        } else
+                            requestPermissions.launch(READ_EXTERNAL_STORAGE)
                     },
                     content = { Text("Pick photo") }
                 )
