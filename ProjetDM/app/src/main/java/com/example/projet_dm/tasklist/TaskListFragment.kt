@@ -11,10 +11,12 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import coil.load
-import com.example.projet_dm.DetailActivity
+import com.example.projet_dm.detail.DetailActivity
 import com.example.projet_dm.R
 import com.example.projet_dm.data.Api
+import com.example.projet_dm.data.ApiKey
 import com.example.projet_dm.databinding.FragmentTaskListBinding
+import com.example.projet_dm.login.LoginActivity
 import com.example.projet_dm.user.UserActivity
 import kotlinx.coroutines.launch
 import java.util.*
@@ -109,6 +111,12 @@ class TaskListFragment : Fragment() {
         binding.plusButton.setOnClickListener {
             val plusIntent = Intent(context, DetailActivity::class.java)
             createTask.launch(plusIntent)
+        }
+
+        //TODO : delete
+        binding.plusButton2.setOnClickListener {
+            val plusIntent2 = Intent(context, LoginActivity::class.java)
+            createTask.launch(plusIntent2)
         }
 
         binding.profilePicture.setOnClickListener {

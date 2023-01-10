@@ -9,6 +9,10 @@ import retrofit2.Retrofit
 
 
 object Api {
+    val LoginWebService : LoginWebService by lazy {
+        retrofit.create(LoginWebService::class.java)
+    }
+
     val userWebService : UserWebService by lazy {
         retrofit.create(UserWebService::class.java)
     }

@@ -1,4 +1,4 @@
-package com.example.projet_dm
+package com.example.projet_dm.detail
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

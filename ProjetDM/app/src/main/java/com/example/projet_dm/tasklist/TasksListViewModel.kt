@@ -2,7 +2,6 @@ package com.example.projet_dm.tasklist
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import com.example.projet_dm.data.Api
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -59,7 +58,6 @@ class TasksListViewModel : ViewModel() {
                 Log.e("Network", "Error: ${response.raw()}")
                 return@launch
             }
-
             tasksStateFlow.value -= task
         }
     }
