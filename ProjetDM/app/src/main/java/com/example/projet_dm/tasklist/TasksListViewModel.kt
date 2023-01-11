@@ -25,7 +25,6 @@ class TasksListViewModel : ViewModel() {
         }
     }
 
-    // à compléter plus tard:
     fun add(task: Task) {
         viewModelScope.launch {
             val response = Api.tasksWebService.create(task)

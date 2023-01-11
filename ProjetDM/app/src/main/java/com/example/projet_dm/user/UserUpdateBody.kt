@@ -1,14 +1,14 @@
-package com.example.projet_dm.data
+package com.example.projet_dm.user
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class User(
+data class UserUpdateBody(
     @SerialName("email")
-    val email: String,
+    val type: String,
     @SerialName("full_name")
     val name: String,
-    @SerialName("avatar_medium")
-    val avatar: String? = null
+    @SerialName("current_password")
+    val password: String
 ) : java.io.Serializable

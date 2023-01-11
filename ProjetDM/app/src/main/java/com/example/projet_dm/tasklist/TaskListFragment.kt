@@ -14,9 +14,12 @@ import coil.load
 import com.example.projet_dm.DetailActivity
 import com.example.projet_dm.R
 import com.example.projet_dm.data.Api
+import com.example.projet_dm.data.User
 import com.example.projet_dm.databinding.FragmentTaskListBinding
 import com.example.projet_dm.user.UserActivity
+import com.example.projet_dm.user.UserViewModel
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
 import java.util.*
 
 
@@ -24,6 +27,7 @@ class TaskListFragment : Fragment() {
     private var _binding : FragmentTaskListBinding? = null
     private val binding get() = _binding!!
     private val viewModel: TasksListViewModel by viewModels()
+    private val userViewModel: UserViewModel by viewModels()
 
     private val adapterListener : TaskListListener = object : TaskListListener {
         override fun onClickDelete(task: Task) {
@@ -113,33 +117,34 @@ class TaskListFragment : Fragment() {
 
         binding.profilePicture.setOnClickListener {
             val profileIntent = Intent(context, UserActivity::class.java)
+            profileIntent.putExtra("user", userViewModel.userStateFlow.value)
             startActivity(profileIntent)
         }
-
-        lifecycleScope.launch {
-            viewModel.tasksStateFlow.collect { newList : List<Task> ->
-                adapter.submitList(newList)
-            }
-        }
-        viewModel.refresh()
 
         val recyclerView = binding.recyclerViewID
         recyclerView.adapter = adapter
 
         val pullToRefresh: SwipeRefreshLayout = binding.pullToRefresh
         pullToRefresh.setOnRefreshListener {
-            onResume()
+            updateFromApis()
             pullToRefresh.isRefreshing = false
         }
+
+        updateFromApis()
     }
 
     override fun onResume() {
         super.onResume()
+        updateFromApis()
+    }
+
+    private fun updateFromApis() {
         lifecycleScope.launch {
-            val user = Api.userWebService.fetchUser().body()!!
-            binding.taskUsername.text = user.name
-            binding.profilePicture.load(user.avatar) {
-                error(R.drawable.ic_launcher_background) // image par défaut en cas d'erreur
+            userViewModel.userStateFlow.collect {
+                binding.taskUsername.text = it.name
+                binding.profilePicture.load(it.avatar) {
+                    error(R.drawable.ic_launcher_background) // image par défaut en cas d'erreur
+                }
             }
         }
         lifecycleScope.launch {
@@ -148,5 +153,6 @@ class TaskListFragment : Fragment() {
             }
         }
         viewModel.refresh()
+        userViewModel.refresh()
     }
 }

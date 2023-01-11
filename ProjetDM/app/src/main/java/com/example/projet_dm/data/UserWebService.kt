@@ -1,11 +1,10 @@
 package com.example.projet_dm.data
 
+import com.example.projet_dm.user.UserUpdate
+import com.example.projet_dm.user.UserUpdateBody
 import okhttp3.MultipartBody
 import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.Multipart
-import retrofit2.http.POST
-import retrofit2.http.Part
+import retrofit2.http.*
 
 interface UserWebService {
     @GET("/sync/v9/user/")
@@ -14,4 +13,7 @@ interface UserWebService {
     @Multipart
     @POST("sync/v9/update_avatar")
     suspend fun updateAvatar(@Part avatar: MultipartBody.Part): Response<User>
+
+    @PATCH("sync/v9/sync")
+    suspend fun update(@Body user: UserUpdate): Response<Unit>
 }
