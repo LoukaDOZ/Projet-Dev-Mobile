@@ -18,5 +18,5 @@ Nous avons réalisé les points bonus suivants :
 
 ## Problèmes non réglés
 Nous avons encore des problèmes que nous avons pas pu régler, tels que :
-- Lorsque les informations de l'utilisateurs sont changées, elles ne sont pas mises à jour automatiquement dans l'activité principale, il faut swipe tout en hautt pour rafraîchir les informations, contrairement aux tâches (raison inconnue)
-- La photo de profil ne peut pas être changée plusieurs, pour une raison inconnue, elle se change la première fois, mais pas les suivante
+- Lorsque les informations de l'utilisateurs sont changées, elles ne sont pas mises à jour automatiquement dans l'activité principale, il faut swipe tout en haut pour rafraîchir les informations, contrairement aux tâches (raison inconnue)
+- La photo de profil ne peut pas être changée plusieurs fois, pour une raison inconnue, elle se change la première fois, mais pas les suivantes
