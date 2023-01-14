@@ -1,7 +1,6 @@
 package com.example.projet_dm.data
 
 import com.example.projet_dm.user.UserUpdate
-import com.example.projet_dm.user.UserUpdateBody
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.*

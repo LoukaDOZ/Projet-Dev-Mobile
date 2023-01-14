@@ -18,6 +18,7 @@ object Api {
     }
 
     private const val TOKEN = "8bd022ec1329a5066aed62f5c816322a92133a81"
+    public var PASSWORD = "GuillaumeEtLouka"
 
     private val retrofit by lazy {
         // client HTTP

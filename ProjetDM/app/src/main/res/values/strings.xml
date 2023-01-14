@@ -4,4 +4,7 @@
     <string name="add">Add</string>
     <string name="refresh">refresh</string>
     <string name="profile_picture">profile picture</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="settings">Settings</string>
 </resources>

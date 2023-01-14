@@ -3,17 +3,26 @@ package com.example.projet_dm
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Green
+import androidx.compose.ui.graphics.Color.Companion.Yellow
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.projet_dm.tasklist.Task
 import com.example.projet_dm.ui.theme.ProjetDMTheme
+import java.time.format.TextStyle
 import java.util.*
 
 class DetailActivity : ComponentActivity() {
@@ -71,11 +80,25 @@ fun Detail(name: String, editTask: Task? = null, onValidate: (Task) -> Unit = {}
         mutableStateOf(Task(id = editTask?.id ?: UUID.randomUUID().toString(), title = editTask?.title ?: "", description = editTask?.description ?: ""))
     }
 
-    Column (Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)){
-        Text(text = "Task Detail", style = MaterialTheme.typography.h1)
-        OutlinedTextField(value = newTask.title, onValueChange = { v -> newTask = newTask.copy(title = v) }, label = {Text("title")})
-        OutlinedTextField(value = newTask.description, onValueChange = { value -> newTask = newTask.copy(description = value) }, label = {Text("description")})
-        Button(onClick = { onValidate(newTask) }) {
+    val mainColor = Color(0xffe44232)
+    val textFieldOutline = TextFieldDefaults.outlinedTextFieldColors(
+        focusedBorderColor = mainColor,
+        unfocusedBorderColor = Color.Black,
+        textColor = Color.Black,
+        cursorColor = mainColor,
+        focusedLabelColor = mainColor,
+        unfocusedLabelColor = Color.Black
+    )
+    val buttonColors = ButtonDefaults.buttonColors(Color(0xffe44232), Color.White)
+
+    Column(Modifier
+        .verticalScroll(rememberScrollState())
+        .background(Color.White), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column (Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp), horizontalAlignment = Alignment.CenterHorizontally){
+            Text(text = "Edit task", style = MaterialTheme.typography.h2, color = Color.Black)
+            OutlinedTextField(value = newTask.title, colors = textFieldOutline, onValueChange = { v -> newTask = newTask.copy(title = v) }, label = {Text("title")})
+            OutlinedTextField(value = newTask.description, colors = textFieldOutline, onValueChange = { value -> newTask = newTask.copy(description = value) }, label = {Text("description")})
+            Button(content = { Text("Save") }, colors = buttonColors, onClick = { onValidate(newTask) })
         }
     }
 }

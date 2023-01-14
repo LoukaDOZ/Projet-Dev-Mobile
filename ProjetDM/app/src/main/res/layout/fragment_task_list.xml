@@ -3,19 +3,72 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
-    <TextView
-        android:id="@+id/task_username"
-        android:background="@android:color/holo_blue_bright"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:ignore="MissingConstraints" />
+        android:background="#e44232"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/profilePicture"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:contentDescription="@string/profile_picture"
+            android:src="@drawable/ic_launcher_background"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
+            app:strokeColor="#e44232"
+            app:strokeWidth="10dp"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/task_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:gravity="center_vertical"
+            android:maxWidth="280dp"
+            android:minHeight="64dp"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            app:layout_constraintLeft_toRightOf="@id/profilePicture"
+            app:layout_constraintRight_toLeftOf="@id/plusButton"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="RtlCompat" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/plusButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#e44232"
+            android:contentDescription="@string/settings"
+            android:outlineAmbientShadowColor="#e44232"
+            android:outlineSpotShadowColor="#e44232"
+            android:src="@drawable/ic_add"
+            app:borderWidth="0dp"
+            app:fabCustomSize="64dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:maxImageSize="40dp"
+            app:tint="@color/white"
+            tools:ignore="MissingConstraints" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/pullToRefresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/constraintLayout">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewID"
@@ -25,20 +78,13 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            android:paddingBottom="8dp">
 
         </androidx.recyclerview.widget.RecyclerView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <ImageView
-        android:id="@+id/profilePicture"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:contentDescription="@string/profile_picture"
-        android:src="@drawable/ic_add"
-        tools:ignore="MissingConstraints" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <!--com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/plusButton"                                                                                                                                                                                                                                                                                                                        
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -47,5 +93,9 @@
         android:src="@drawable/ic_add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/pullToRefresh"
-        android:contentDescription="@string/add" />
+        android:backgroundTint="#e44232"
+        app:tint="@color/white"
+        app:borderWidth="1dp"
+        app:backgroundTint="@color/white"
+        android:contentDescription="@string/add" /-->
 </androidx.constraintlayout.widget.ConstraintLayout>

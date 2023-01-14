@@ -28,10 +28,9 @@ class UserViewModel : ViewModel() {
     }
 
     fun edit(user: User) {
-        val userUpdateBody = UserUpdateBody(user.email, user.name, "GuillaumeEtLouka")
-        val userUpdateCommand = UserUpdateCommand("user_update", UUID.randomUUID().toString(), userUpdateBody)
+        val userUpdateBody = UserUpdateBody(user.email, user.name, Api.PASSWORD)
         val userUpdateList = emptyList<UserUpdateCommand>().toMutableList()
-        userUpdateList += userUpdateCommand
+        userUpdateList += UserUpdateCommand("user_update", UUID.randomUUID().toString(), userUpdateBody)
         val userUpdate = UserUpdate(userUpdateList)
 
         viewModelScope.launch {
