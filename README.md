@@ -20,3 +20,8 @@ Nous avons réalisé les points bonus suivants :
 Nous avons encore des problèmes que nous avons pas pu régler, tels que :
 - Lorsque les informations de l'utilisateurs sont changées, elles ne sont pas mises à jour automatiquement dans l'activité principale, il faut swipe tout en haut pour rafraîchir les informations, contrairement aux tâches (raison inconnue)
 - La photo de profil ne peut pas être changée plusieurs fois, pour une raison inconnue, elle se change la première fois, mais pas les suivantes
+
+## Identification utilisateur
+Nous avons tenté de mettre en place une page de login permettant de s'authentifier directement sur l'application et eventuellement de changer d'utilisateur sans devoir changer le Token en dur dans le code. Toutefois nous avons rencontré un certain nombre de problème.
+Initialement, nous pensions qu'il était possible de s'authentifier directement avec l'API en envoyant les crédentials (username et password) se qui n'était finalement pas le cas. Dans un second temps nous avons tenté d'utiliser AppAuth mais avons rencontré des difficultés que nous n'avons su identifié.
+Enfin nous avons testé d'intercépter directement l'URL de redirection sans passé par AppAuth mais les résultats n'ont encore une fois pas été concluant. Vous pourrez toutefois consulté le code des tentatives sur les différentes branches du dépot.
