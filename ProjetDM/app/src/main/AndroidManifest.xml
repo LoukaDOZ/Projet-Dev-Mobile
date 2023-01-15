@@ -80,7 +80,7 @@
 
                 <data
                     android:host="localhost"
-                    android:scheme="https"
+                    android:scheme="http"
                     android:port="3000"
                     android:path="/receive_code" />
             </intent-filter>

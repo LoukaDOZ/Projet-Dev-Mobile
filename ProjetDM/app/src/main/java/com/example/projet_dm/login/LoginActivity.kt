@@ -17,45 +17,45 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.lifecycleScope
 import com.example.projet_dm.data.Api
 import com.example.projet_dm.ui.theme.ProjetDMTheme
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import net.openid.appauth.*
+import java.util.concurrent.Flow
 
 class LoginActivity : ComponentActivity() {
-    companion object {
+    private object PreferencesKeys {
         val TOKEN_PREF_KEY = stringPreferencesKey("TOKEN")
     }
     private val Context.dataStore by preferencesDataStore(name = "settings")
 
     private val authService by lazy { AuthorizationService(this) }
     private val requestToken = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { it ->
-        println("TEST 0")
+        /* TODO : Code jamais éxécuté */
         val authMethod = ClientSecretPost(Api.APP_SECRET)
         val authException = AuthorizationException.fromIntent(it.data)
         if (authException != null) throw authException
-        println("TEST 1")
         val authResponse = AuthorizationResponse.fromIntent(it.data!!) ?: throw IllegalStateException("No auth response data")
         val tokenRequest = authResponse.createTokenExchangeRequest()
-        println("TEST 2")
         authService.performTokenRequest(tokenRequest, authMethod) { response, exception ->
             if (exception != null) throw exception
             lifecycleScope.launch {
                 // response and token can't be null because exception was null
-                dataStore.edit { it[TOKEN_PREF_KEY] = response!!.accessToken!! }
+                dataStore.edit { it[PreferencesKeys.TOKEN_PREF_KEY] = response!!.accessToken!! }
             }
             finish()
         }
     }
 
-    fun requestToken() {
+    private fun requestToken() {
         val configuration = AuthorizationServiceConfiguration(
-            Uri.parse("https://todoist.com/oauth/authorize/"),
-            Uri.parse("https://todoist.com/oauth/access_token/"),
+            Uri.parse("https://todoist.com/oauth/authorize"),
+            Uri.parse("https://todoist.com/oauth/access_token"),
         )
         val builder = AuthorizationRequest.Builder(
             configuration,
             Api.APP_ID,
             ResponseTypeValues.CODE,
-            Uri.parse("http://localhost:3000/receive_code/")
+            Uri.parse("http://localhost:3000/receive_code")
         )
         val authRequest = builder
             .setScopes("data:read_write,data:delete")
@@ -65,7 +65,6 @@ class LoginActivity : ComponentActivity() {
             authService.getAuthorizationRequestIntent(authRequest)!! // never returns null (from Java)
 
         authService.dispose()
-        println("TEST -1")
         requestToken.launch(authRequestIntent)
     }
 
@@ -80,6 +79,10 @@ class LoginActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     requestToken()
+
+                    println("TEST")
+                    println(PreferencesKeys.TOKEN_PREF_KEY)
+
                 }
             }
         }
