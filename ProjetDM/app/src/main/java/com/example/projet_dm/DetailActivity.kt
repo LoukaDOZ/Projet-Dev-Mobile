@@ -80,6 +80,10 @@ fun Detail(name: String, editTask: Task? = null, onValidate: (Task) -> Unit = {}
         mutableStateOf(Task(id = editTask?.id ?: UUID.randomUUID().toString(), title = editTask?.title ?: "", description = editTask?.description ?: ""))
     }
 
+    var title by remember {
+        mutableStateOf(if(editTask != null) "Edit task" else "Create task")
+    }
+
     val mainColor = Color(0xffe44232)
     val textFieldOutline = TextFieldDefaults.outlinedTextFieldColors(
         focusedBorderColor = mainColor,
@@ -95,7 +99,7 @@ fun Detail(name: String, editTask: Task? = null, onValidate: (Task) -> Unit = {}
         .verticalScroll(rememberScrollState())
         .background(Color.White), horizontalAlignment = Alignment.CenterHorizontally) {
         Column (Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp), horizontalAlignment = Alignment.CenterHorizontally){
-            Text(text = "Edit task", style = MaterialTheme.typography.h2, color = Color.Black)
+            Text(text = title, style = MaterialTheme.typography.h2, color = Color.Black)
             OutlinedTextField(value = newTask.title, colors = textFieldOutline, onValueChange = { v -> newTask = newTask.copy(title = v) }, label = {Text("title")})
             OutlinedTextField(value = newTask.description, colors = textFieldOutline, onValueChange = { value -> newTask = newTask.copy(description = value) }, label = {Text("description")})
             Button(content = { Text("Save") }, colors = buttonColors, onClick = { onValidate(newTask) })
