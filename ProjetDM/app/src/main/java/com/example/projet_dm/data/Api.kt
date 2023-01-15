@@ -18,6 +18,8 @@ object Api {
     }
 
     private const val TOKEN = "8bd022ec1329a5066aed62f5c816322a92133a81"
+    public const val APP_ID = "6ea37fd9bf6f4c47abd230729e5d5a25"
+    public const val APP_SECRET = "c74e5e261be54a77b39877b0a123b6e4"
     public var PASSWORD = "GuillaumeEtLouka"
 
     private val retrofit by lazy {
